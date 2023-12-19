@@ -16,6 +16,7 @@ load_dotenv()
 SMTP_EMAIL = os.getenv("SMTP_EMAIL")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 MONGO_URL = os.getenv("MONGO_URL")
+USER = "AlejandroPM"
 
 def process_transactions(file_path):
     transactions = []
@@ -69,11 +70,12 @@ def process_transactions(file_path):
 def save_to_mongodb(transactions):
     # Connect to MongoDB
     client = MongoClient(MONGO_URL)
-    db = client["my_db_name"]
+    db = client["MyPlayground"]
     collection = db["transactions"]
 
     # Save transactions to MongoDB
-    collection.insert_many(transactions)
+    collection.insert_one({'user':USER, 'transactions': transactions})
+
 def send_email(summary, transactions):
     # Initializing SMTP details
     sender_email = SMTP_EMAIL
