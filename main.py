@@ -76,11 +76,11 @@ def save_to_mongodb(transactions):
     # Save transactions to MongoDB
     collection.insert_one({'user':USER, 'transactions': transactions})
 
-def send_email(summary, transactions):
+def send_email(summary, transactions, receiver_email):
     # Initializing SMTP details
     sender_email = SMTP_EMAIL
     sender_password = SMTP_PASSWORD
-    receiver_email = "luis.alejandro241096@gmail.com"
+    receiver_email = receiver_email
     subject = "Transaction Summary"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -148,8 +148,7 @@ def send_email(summary, transactions):
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
-    print(body)
-
+#Locally run the script 
 if __name__ == "__main__":
     file_path = "txns.csv"
 
@@ -157,4 +156,21 @@ if __name__ == "__main__":
     summary, transactions = process_transactions(file_path)
 
     # Send summary email with transactions table
-    send_email(summary, transactions)
+    send_email(summary, transactions, "luis.alejandro241096@gmail.com")
+    
+# Lambda Function handler
+def lambda_handler(event, context):
+    receiver_email = event['receiver_email']
+    try:
+        summary, transactions = process_transactions(file_path)
+        # Send summary email with transactions table
+        send_email(summary, transactions, receiver_email)
+    except Exception as err:
+        return { 
+            'message' : 'There was an error with the request',
+            'error' : err
+        }
+
+    return { 
+        'message' : 'email was sent successfully'
+    }
