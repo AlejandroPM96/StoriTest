@@ -53,37 +53,29 @@ To run the script locally:
 
 To deploy the script as an AWS Lambda function inside a Docker image:
 
-1. **Package your code and dependencies into a ZIP file:**
-
-    ```bash
-    zip -r lambda_function.zip . -x "*.git*" "*.zip" "*.dockerignore" "Dockerfile" "*.pyc" "__pycache__" "txns.csv"
-    ```
-
-2. **Build your Docker image:**
+1. **Build your Docker image:**
 
     ```bash
     docker build -t your-image-name .
     ```
 
-3. **Push the image to your container registry:**
+2. **Push the image to your container registry:**
 
     ```bash
     docker tag your-image-name:latest your-registry-url/your-image-name:latest
     docker push your-registry-url/your-image-name:latest
     ```
 
-4. **Create an AWS Lambda function using the container image.**
+3. **Create an AWS Lambda function using the container image.**
 
-5. **Configure the Lambda function to use the provided container image URI.**
+4. **Configure the Lambda function to use the provided container image URI.**
 
-6. **Set up an API Gateway trigger for the Lambda function to allow HTTP POST requests.**
+5. **Set up an API Gateway trigger for the Lambda function to allow HTTP POST requests.**
 
-7. **Test the Lambda function by sending an HTTP POST request with a JSON payload:**
+6. **Test the Lambda function by sending an HTTP POST request with a JSON payload:**
 
     ```json
     {
       "receiver_email": "your-email@example.com"
     }
     ```
-
-Feel free to customize this README based on your specific project structure and requirements.
