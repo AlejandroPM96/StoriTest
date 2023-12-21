@@ -1,13 +1,10 @@
 FROM public.ecr.aws/lambda/python:3.8
 
-# Set working directory
-WORKDIR /var/task
-
 # Install dependencies
-COPY requirements.txt .
+COPY requirements.txt ${LAMBDA_TASK_FUNCTION}
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-COPY . .
+COPY . ${LAMBDA_TASK_FUNCTION}
 
-CMD ["lambda_handler"]
+CMD ["main.lambda_handler"]

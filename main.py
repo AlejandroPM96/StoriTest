@@ -91,7 +91,7 @@ def send_email(summary, transactions, receiver_email):
     message['Subject'] = subject
 
     # Logo image path
-    image_path = 'logo.png'
+    image_path = 'https://mylilbuckettest.s3.us-east-2.amazonaws.com/logo.png'
     csv_file_path = 'txns.csv'
 
     # Create the email message with summary, transactions table, and logo image from file
@@ -149,20 +149,20 @@ def send_email(summary, transactions, receiver_email):
         server.sendmail(sender_email, receiver_email, message.as_string())
 
 #Locally run the script 
-if __name__ == "__main__":
-    file_path = "txns.csv"
+# if __name__ == "__main__":
+#     file_path = "txns.csv"
 
-    # Process transactions
-    summary, transactions = process_transactions(file_path)
+#     # Process transactions
+#     summary, transactions = process_transactions(file_path)
 
-    # Send summary email with transactions table
-    send_email(summary, transactions, "luis.alejandro241096@gmail.com")
+#     # Send summary email with transactions table
+#     send_email(summary, transactions, "luis.alejandro241096@gmail.com")
     
 # Lambda Function handler
 def lambda_handler(event, context):
     receiver_email = event['receiver_email']
     try:
-        summary, transactions = process_transactions(file_path)
+        summary, transactions = process_transactions('txns.csv')
         # Send summary email with transactions table
         send_email(summary, transactions, receiver_email)
     except Exception as err:
