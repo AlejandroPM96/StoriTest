@@ -1,6 +1,8 @@
 import os
 import csv
 import smtplib
+import json
+import requests
 from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -160,17 +162,19 @@ def send_email(summary, transactions, receiver_email):
     
 # Lambda Function handler
 def lambda_handler(event, context):
-    receiver_email = event['receiver_email']
+    body = json.loads(event["body"])
+    receiver_email = body.get("receiver_email", "default@email.com")
     try:
         summary, transactions = process_transactions('txns.csv')
         # Send summary email with transactions table
         send_email(summary, transactions, receiver_email)
     except Exception as err:
-        return { 
-            'message' : 'There was an error with the request',
-            'error' : err
+        {
+            "statusCode": 501,
+            "body": json.dumps({"message": "There was an error sending the email", "error": err})
         }
 
-    return { 
-        'message' : 'email was sent successfully'
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"message": "Email sent successfully!"})
     }
