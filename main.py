@@ -158,7 +158,7 @@ def send_email(summary, transactions, receiver_email):
 #     summary, transactions = process_transactions(file_path)
 
 #     # Send summary email with transactions table
-#     send_email(summary, transactions, "luis.alejandro241096@gmail.com")
+#     send_email(summary, transactions, "your-email@example.com")
     
 # Lambda Function handler
 def lambda_handler(event, context):
