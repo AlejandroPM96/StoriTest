@@ -83,6 +83,7 @@ def send_email(summary, transactions, receiver_email):
     sender_email = SMTP_EMAIL
     sender_password = SMTP_PASSWORD
     receiver_email = receiver_email
+    USER = receiver_email
     subject = "Transaction Summary"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
