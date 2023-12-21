@@ -43,10 +43,12 @@ To run the script locally:
 
 5. **Create a `txns.csv` file with your transaction data.**
 
-6. **Run the script:**
+6. **Uncomment the lines at 154 through 161**
+
+7. **Run the script:**
 
     ```bash
-    python your_script_name.py
+    python main.py
     ```
 
 ## AWS Lambda Deployment
