@@ -1,6 +1,8 @@
 import os
 import csv
 import smtplib
+import json
+import requests
 from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -76,11 +78,11 @@ def save_to_mongodb(transactions):
     # Save transactions to MongoDB
     collection.insert_one({'user':USER, 'transactions': transactions})
 
-def send_email(summary, transactions):
+def send_email(summary, transactions, receiver_email):
     # Initializing SMTP details
     sender_email = SMTP_EMAIL
     sender_password = SMTP_PASSWORD
-    receiver_email = "luis.alejandro241096@gmail.com"
+    receiver_email = receiver_email
     subject = "Transaction Summary"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -91,7 +93,7 @@ def send_email(summary, transactions):
     message['Subject'] = subject
 
     # Logo image path
-    image_path = 'logo.png'
+    image_path = 'https://mylilbuckettest.s3.us-east-2.amazonaws.com/logo.png'
     csv_file_path = 'txns.csv'
 
     # Create the email message with summary, transactions table, and logo image from file
@@ -148,13 +150,31 @@ def send_email(summary, transactions):
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
-    print(body)
+#Locally run the script 
+# if __name__ == "__main__":
+#     file_path = "txns.csv"
 
-if __name__ == "__main__":
-    file_path = "txns.csv"
+#     # Process transactions
+#     summary, transactions = process_transactions(file_path)
 
-    # Process transactions
-    summary, transactions = process_transactions(file_path)
+#     # Send summary email with transactions table
+#     send_email(summary, transactions, "luis.alejandro241096@gmail.com")
+    
+# Lambda Function handler
+def lambda_handler(event, context):
+    body = json.loads(event["body"])
+    receiver_email = body.get("receiver_email", "default@email.com")
+    try:
+        summary, transactions = process_transactions('txns.csv')
+        # Send summary email with transactions table
+        send_email(summary, transactions, receiver_email)
+    except Exception as err:
+        {
+            "statusCode": 501,
+            "body": json.dumps({"message": "There was an error sending the email", "error": err})
+        }
 
-    # Send summary email with transactions table
-    send_email(summary, transactions)
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"message": "Email sent successfully!"})
+    }
